@@ -17,28 +17,23 @@ class log_format:
         time=datetime.now().strftime(' [%d-%b-%y %H:%M:%S] ')
         return time
 
-    @classmethod
-    def get_sec(self):
-        sec=datetime.now().strftime('%S')
-        return int(sec)
-
 
 #prints the message to output screen and logs to text file
 #typ= 0:Normal Message  1:Warning Message 2:Error Message
 def log(message,res):
-    if(res==1 or res==2  ):
-        log_format.error_write=1
-    res=0 #will do the colorfull things later :P
     if res==0:
-        message=message
+        print_message=message
     elif res==1:
-        message=  log_format.WARNING+message+log_format.ENDC
+        print_message=  log_format.WARNING+message+log_format.ENDC
+        log_format.error_write=1
     elif res==2 :
-        message= log_format.FAIL+message+log_format.ENDC
+        print_message= log_format.FAIL+message+log_format.ENDC
+        log_format.error_write=1
 
     if(log_format.write==1 or log_format.error_write==1):
         message=log_format.get_time()+message
-        print message
+        print_message=log_format.get_time()+print_message
+        print print_message
         f = open(file_name, 'a')
         f.write(message+"\n")
         f.close()
@@ -64,13 +59,14 @@ file_name=conf["file_name"]
 server_ips=conf["server"]
 rpi_ips=conf["rpi"]
 camera_ips=conf["camera"]
+reset_time=conf["reset_time"]
+prev_time=time.time()
 
 while True:
-    sec=log_format.get_sec()
-    if(sec%10==0): #hard coded here... need to modify based on the time interval for logging
+    cur_time=time.time()
+    if(cur_time-prev_time > reset_time):
         log_format.write=1
-
-
+        prev_time=time.time()
 
     #port 22 :  Port that is used for ssh
     #port 22 will work for most of the unix machines on the network
@@ -86,7 +82,7 @@ while True:
     #can be checked in the port 1024 or 554 for rtsp links
     log("Checking Cameras",0)
     for ip in camera_ips:
-         ping_check(ip,8)
+         ping_check(ip,80)
 
     log_format.write=0
     time.sleep(2)
