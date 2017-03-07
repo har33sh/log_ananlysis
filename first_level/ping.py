@@ -14,7 +14,7 @@ class log_format:
 
     @classmethod
     def get_time(self):
-        time=datetime.now().strftime(' [%d-%b-%y %H:%M:%S] ')
+        time=datetime.now().strftime('[%d-%b-%y %H:%M:%S] ')
         return time
 
 
@@ -30,7 +30,7 @@ def log(message,res):
         print_message= log_format.FAIL+message+log_format.ENDC
         log_format.error_write=1
 
-    if(log_format.write==1 or log_format.error_write==1):
+    if(log_format.write==1 or log_format.error_write==1): #normal print or error printing
         message=log_format.get_time()+message
         print_message=log_format.get_time()+print_message
         print print_message
@@ -53,36 +53,41 @@ def ping_check(ip,port):
         log(msg,2)
     s.close()
 
+def main():
 
-conf = json.load(open('config.json'))
-file_name=conf["file_name"]
-server_ips=conf["server"]
-rpi_ips=conf["rpi"]
-camera_ips=conf["camera"]
-reset_time=conf["reset_time"]
-prev_time=time.time()
+    prev_time=time.time()
 
-while True:
-    cur_time=time.time()
-    if(cur_time-prev_time > reset_time):
-        log_format.write=1
-        prev_time=time.time()
+    while True:
+        cur_time=time.time()
+        if(cur_time-prev_time > reset_time):
+            log_format.write=1
+            prev_time=time.time()
 
-    #port 22 :  Port that is used for ssh
-    #port 22 will work for most of the unix machines on the network
-    log("Checking Servers",0)
-    for ip in server_ips:
-         ping_check(ip,22)
+        #port 22 :  Port that is used for ssh
+        #port 22 will work for most of the unix machines on the network
+        log("Checking Servers",0)
+        for ip in server_ips:
+             ping_check(ip,22)
 
-    log("Checking RPi's",0)
-    for ip in rpi_ips:
-         ping_check(ip,22)
+        log("Checking RPi's",0)
+        for ip in rpi_ips:
+             ping_check(ip,22)
 
-    #port 80: Port which is used for default website
-    #can be checked in the port 1024 or 554 for rtsp links
-    log("Checking Cameras",0)
-    for ip in camera_ips:
-         ping_check(ip,80)
+        #port 80: Port which is used for default website
+        #can be checked in the port 1024 or 554 for rtsp links
+        log("Checking Cameras",0)
+        for ip in camera_ips:
+             ping_check(ip,80)
 
-    log_format.write=0
-    time.sleep(2)
+        log_format.write=0
+        time.sleep(2)
+
+
+if __name__=="__main__":
+    conf = json.load(open('config.json'))
+    file_name=conf["file_name"]
+    server_ips=conf["server"]
+    rpi_ips=conf["rpi"]
+    camera_ips=conf["camera"]
+    reset_time=conf["reset_time"]
+    main()

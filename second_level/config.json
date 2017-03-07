@@ -1,0 +1,20 @@
+{
+  "mqttHost" : "10.129.23.41",
+  "mqttPort" : 1883,
+  "mqttKeepalive" : 60,
+  "reset_time":5,
+  
+  "10.129.23.140":{
+    "process_names":["room_actuator","tempcollect"]
+  },
+  "10.129.23.100":{
+    "process_names":["classroom","Seil_proxy"]
+  },
+  "10.129.23.101":{
+    "process_names":["room_actuator","tempcollect"]
+  },
+  "10.129.26.119":{
+    "process_names":["room_actuator","process_monitor"]
+  }
+
+}
