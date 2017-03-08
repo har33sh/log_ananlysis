@@ -2,7 +2,7 @@ import commands
 import json
 import socket
 import time
-
+from datetime import datetime
 from mqtt_sender import send_msg
 
 def check_status(process_name):
@@ -22,7 +22,7 @@ def get_ip(): #function returns the ip address of the machine
     return ip
 
 
-def main():
+def monitor_process(threadName):
     prev_time=time.time()
     while True:
         for process in process_names:
@@ -30,13 +30,18 @@ def main():
                 cur_time=time.time()
                 if(cur_time-prev_time > reset_time):
                     prev_time=time.time()
-                    print process+" Running"
+                    ts=datetime.now().strftime('[%d-%b-%y %H:%M:%S]')
+                    msg={"ts":ts,"ip":get_ip(),process:"Running"}
+                    msg=json.dumps(msg)
+                    send_msg(msg)
             else :
-                print process+" Not Running"
+                ts=datetime.now().strftime('[%d-%b-%y %H:%M:%S]')
+                msg={"ts":ts,"ip":get_ip(),process:"Not Running"}
+                msg=json.dumps(msg)
+                send_msg(msg)
         time.sleep(2)
 
-if __name__=="__main__":
-    conf = json.load(open('config.json'))
-    process_names = conf[get_ip()] ["process_names"]
-    reset_time=conf["reset_time"]
-    main()
+
+conf = json.load(open('config.json'))
+process_names = conf[get_ip()] ["process_names"]
+reset_time=conf["reset_time"]

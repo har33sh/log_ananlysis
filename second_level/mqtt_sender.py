@@ -9,6 +9,6 @@ mqttc.connect(conf["mqttHost"], conf["mqttPort"], conf["mqttKeepalive"])
 mqttc.loop_start()
 
 def send_msg(msg):
-    mqttc.publish(conf["mqttTopicName"],ip,2)
-    print "MQTT msg sent : "+str(ip)
+    mqttc.publish(conf["mqttTopicName"],msg,2)
+    print "MQTT msg sent : "+msg
     time.sleep(1)
