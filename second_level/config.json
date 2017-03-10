@@ -4,17 +4,21 @@
   "mqttKeepalive" : 60,
   "reset_time":5,
   "mqttTopicName":"data/kresit/logs/classrooms/",
-  
+
   "10.129.23.140":{
+    "type":"rpi",
     "process_names":["room_actuator","tempcollect"]
   },
   "10.129.23.100":{
+    "type":"server",
     "process_names":["classroom","Seil_proxy"]
   },
   "192.168.1.136":{
+    "type":"server",
     "process_names":["room_actuator","tempcollect"]
   },
   "10.129.26.119":{
+    "type":"server",
     "process_names":["room_actuator","process_monitor"]
   }
 
